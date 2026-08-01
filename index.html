@@ -7,9 +7,9 @@
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <style>
         :root {
-            --bg-dark: #0f172a;
-            --card-w: 64px;
-            --card-h: 96px;
+            --bg-dark: #0b0f19;
+            --card-w: 66px;
+            --card-h: 98px;
             --c-red: #ff3b30;
             --c-blue: #007aff;
             --c-green: #34c759;
@@ -28,7 +28,7 @@
 
         body {
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-            background: radial-gradient(circle at top, #1e1b4b 0%, var(--bg-dark) 100%);
+            background: radial-gradient(circle at 50% 20%, #1e1b4b 0%, var(--bg-dark) 80%);
             color: #ffffff;
             height: 100vh;
             width: 100vw;
@@ -44,7 +44,7 @@
             justify-content: space-between;
             align-items: center;
             padding: 12px 16px;
-            background: rgba(15, 23, 42, 0.8);
+            background: rgba(11, 15, 25, 0.85);
             backdrop-filter: blur(12px);
             border-bottom: 1px solid rgba(255, 255, 255, 0.1);
             z-index: 20;
@@ -56,6 +56,7 @@
             background: linear-gradient(135deg, var(--accent-pink), var(--accent-cyan));
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
+            letter-spacing: 1px;
         }
 
         .turn-badge {
@@ -73,33 +74,33 @@
             display: flex;
             justify-content: center;
             gap: 12px;
-            padding: 12px 0 0 0;
+            padding-top: 14px;
             z-index: 10;
         }
 
         .bot-tag {
-            background: rgba(255, 255, 255, 0.05);
+            background: rgba(255, 255, 255, 0.06);
             padding: 8px 16px;
             border-radius: 16px;
             font-size: 0.85rem;
             font-weight: 700;
-            border: 1px solid rgba(255, 255, 255, 0.15);
+            border: 1px solid rgba(255, 255, 255, 0.12);
             transition: all 0.3s ease;
         }
 
         .bot-tag.active {
             border-color: var(--accent-cyan);
-            background: rgba(6, 182, 212, 0.2);
+            background: rgba(6, 182, 212, 0.25);
             box-shadow: 0 0 15px rgba(6, 182, 212, 0.4);
         }
 
-        /* Игровое поле */
+        /* Игровой стол */
         .table {
             flex: 1;
             display: flex;
             justify-content: center;
             align-items: center;
-            gap: 24px;
+            gap: 20px;
             position: relative;
         }
 
@@ -110,11 +111,12 @@
             background: #ffffff;
             color: #000;
             display: flex;
+            flex-direction: column;
             justify-content: center;
             align-items: center;
             font-weight: 900;
-            font-size: 1.7rem;
-            box-shadow: 0 8px 20px rgba(0,0,0,0.5);
+            font-size: 1.6rem;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.6);
             border: 3px solid #ffffff;
             position: relative;
             flex-shrink: 0;
@@ -127,26 +129,27 @@
             cursor: pointer;
             font-size: 0.85rem;
             text-align: center;
-            box-shadow: 0 0 15px rgba(236, 72, 153, 0.3);
+            box-shadow: 0 0 20px rgba(236, 72, 153, 0.4);
         }
 
         .deck-slot:active { transform: scale(0.92); }
-        .card-slot.red { background: var(--c-red); color: white; }
-        .card-slot.blue { background: var(--c-blue); color: white; }
-        .card-slot.green { background: var(--c-green); color: white; }
-        .card-slot.yellow { background: var(--c-yellow); color: white; }
+        .card-slot.red { background: var(--c-red); color: white; border-color: #ff6b6b; }
+        .card-slot.blue { background: var(--c-blue); color: white; border-color: #74b9ff; }
+        .card-slot.green { background: var(--c-green); color: white; border-color: #55efc4; }
+        .card-slot.yellow { background: var(--c-yellow); color: #2d3436; border-color: #ffeaa7; }
         .card-slot.wild { background: linear-gradient(135deg, var(--c-red), var(--c-blue), var(--c-green), var(--c-yellow)); color: white; }
 
-        /* Фиксированная зона карт игрока */
+        /* Зона карт игрока */
         .player-zone {
-            background: rgba(15, 23, 42, 0.85);
-            backdrop-filter: blur(10px);
+            background: rgba(11, 15, 25, 0.9);
+            backdrop-filter: blur(12px);
             border-top: 1px solid rgba(255, 255, 255, 0.1);
             padding: 15px 10px 25px 10px;
             display: flex;
             flex-direction: column;
             align-items: center;
             z-index: 20;
+            min-height: 140px;
         }
 
         .cards-hand {
@@ -156,7 +159,7 @@
             gap: 8px;
             overflow-x: auto;
             max-width: 100vw;
-            padding: 10px 15px;
+            padding: 10px;
             width: 100%;
         }
 
@@ -169,11 +172,11 @@
             transform: translateY(-15px) scale(1.1);
         }
 
-        /* Неоновая кнопка 101 */
+        /* Кнопка 101 */
         .btn-101 {
             position: fixed;
             right: 18px;
-            bottom: 160px;
+            bottom: 165px;
             width: 60px;
             height: 60px;
             border-radius: 50%;
@@ -189,20 +192,20 @@
 
         .btn-101:active { transform: scale(0.9); }
 
-        /* Диалог выбора цвета */
+        /* Выбор цвета */
         .color-picker {
             display: none;
             position: fixed;
             top: 50%;
             left: 50%;
             transform: translate(-50%, -50%);
-            background: rgba(15, 23, 42, 0.95);
+            background: rgba(11, 15, 25, 0.95);
             border: 2px solid var(--accent-cyan);
             padding: 20px;
             border-radius: 24px;
             gap: 15px;
             z-index: 200;
-            box-shadow: 0 0 30px rgba(6, 182, 212, 0.4);
+            box-shadow: 0 0 30px rgba(6, 182, 212, 0.5);
         }
 
         .c-btn {
@@ -247,9 +250,6 @@
     </div>
 
     <script>
-        const tg = window.Telegram?.WebApp;
-        if (tg) { tg.ready(); tg.expand(); }
-
         const colors = ['red', 'blue', 'green', 'yellow'];
         const values = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '🚫', '🔄', '+2'];
         let turn = 0;
@@ -266,15 +266,9 @@
             };
         }
 
-        function init() {
-            playerHand = Array.from({length: 7}, () => getRandomCard());
-            topCard = getRandomCard();
-            if (topCard.color === 'wild') topCard.color = 'red';
-            render();
-        }
-
         function render() {
             const handEl = document.getElementById('player-hand');
+            if (!handEl) return;
             handEl.innerHTML = '';
             
             playerHand.forEach((card, i) => {
@@ -286,8 +280,10 @@
             });
 
             const discard = document.getElementById('discard-pile');
-            discard.className = card-slot ${topCard.color};
-            discard.innerText = topCard.value;
+            if (discard) {
+                discard.className = card-slot ${topCard.color};
+                discard.innerText = topCard.value;
+            }
 
             document.getElementById('b1-tag').innerText = 🤖 Бот 1: ${b1Cards};
             document.getElementById('b2-tag').innerText = 🤖 Бот 2: ${b2Cards};
@@ -355,11 +351,19 @@
         }
 
         function say101() {
-            if (tg && tg.showAlert) tg.showAlert('🔥 101!');
-            else alert('🔥 101!');
+            alert('🔥 101!');
         }
 
-        init();
+        document.addEventListener('DOMContentLoaded', () => {
+            const tg = window.Telegram?.WebApp;
+            if (tg) { tg.ready(); tg.expand(); }
+
+            playerHand = Array.from({length: 7}, () => getRandomCard());
+            topCard = getRandomCard();
+            if (topCard.color === 'wild') topCard.color = 'red';
+            
+            render();
+        });
     </script>
 </body>
 </html>
