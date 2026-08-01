@@ -8,8 +8,8 @@
     <style>
         :root {
             --bg-gradient: radial-gradient(circle at 50% 30%, #3a1c71 0%, #2a0845 50%, #100526 100%);
-            --card-w: 64px;
-            --card-h: 92px;
+            --card-w: 60px;
+            --card-h: 88px;
             --c-red: #ff3366;
             --c-blue: #00d2ff;
             --c-green: #00e676;
@@ -39,6 +39,7 @@
             flex-direction: column;
             justify-content: space-between;
             background: var(--bg-gradient);
+            position: relative;
         }
 
         /* Шапка */
@@ -52,6 +53,7 @@
             backdrop-filter: blur(20px);
             border-bottom: 1px solid rgba(255, 255, 255, 0.15);
             flex-shrink: 0;
+            z-index: 10;
         }
 
         .title {
@@ -82,6 +84,7 @@
             gap: 12px;
             flex-shrink: 0;
             margin-top: 10px;
+            z-index: 10;
         }
 
         .bot-tag {
@@ -111,6 +114,7 @@
             align-items: center;
             gap: 24px;
             min-height: 100px;
+            z-index: 5;
         }
 
         /* Стили карт */
@@ -125,7 +129,7 @@
             justify-content: center;
             align-items: center;
             font-weight: 900;
-            font-size: 1.5rem;
+            font-size: 1.4rem;
             box-shadow: 0 10px 25px rgba(0,0,0,0.5);
             border: 2px solid rgba(255, 255, 255, 0.8);
             flex-shrink: 0;
@@ -149,28 +153,31 @@
             border-color: #ffffff;
         }
 
-        /* Зона карт игрока */
+        /* Зона карт игрока (Явно поверх всего) */
         .player-zone {
-            height: 135px;
-            background: rgba(0, 0, 0, 0.35);
+            height: 140px;
+            background: rgba(0, 0, 0, 0.45);
             backdrop-filter: blur(25px);
-            border-top: 1px solid rgba(255, 255, 255, 0.15);
+            border-top: 1px solid rgba(255, 255, 255, 0.2);
             display: flex;
             align-items: center;
             padding: 10px 16px;
             flex-shrink: 0;
             width: 100%;
+            position: relative;
+            z-index: 100;
         }
 
         .cards-hand {
             display: flex;
             justify-content: flex-start;
             align-items: center;
-            gap: 10px;
+            gap: 12px;
             overflow-x: auto;
             width: 100%;
             height: 100%;
-            padding: 5px;
+            padding: 5px 0;
+            -webkit-overflow-scrolling: touch;
         }
 
         .cards-hand .card-slot {
@@ -193,7 +200,7 @@
         .btn-101 {
             position: fixed;
             right: 18px;
-            bottom: 150px;
+            bottom: 155px;
             width: 58px;
             height: 58px;
             border-radius: 50%;
@@ -203,7 +210,7 @@
             font-weight: 900;
             font-size: 1rem;
             cursor: pointer;
-            z-index: 50;
+            z-index: 120;
             animation: pulse101 2s ease-in-out infinite;
         }
 
@@ -253,11 +260,11 @@
     </div>
 
     <button class="btn-101" onclick="say101()">101!</button>
-
-    <div class="player-zone">
+        <div class="player-zone">
         <div class="cards-hand" id="player-hand"></div>
     </div>
-        <div class="color-picker" id="color-picker">
+
+    <div class="color-picker" id="color-picker">
         <div class="c-btn" style="background: var(--c-red)" onclick="selectColor('red')"></div>
         <div class="c-btn" style="background: var(--c-blue)" onclick="selectColor('blue')"></div>
         <div class="c-btn" style="background: var(--c-green)" onclick="selectColor('green')"></div>
@@ -273,6 +280,7 @@
         let b1Cards = 7;
         let b2Cards = 7;
         let topCard = { color: 'red', value: '7' };
+        let isInitialized = false;
 
         function getRandomCard() {
             const rand = Math.random();
@@ -376,8 +384,10 @@
         }
 
         function initGame() {
+            if (isInitialized) return;
+            
             try {
-                if (window.Telegram && window.Telegram.WebApp && typeof window.Telegram.WebApp.ready === 'function') {
+                if (window.Telegram && window.Telegram.WebApp) {
                     window.Telegram.WebApp.ready();
                     window.Telegram.WebApp.expand();
                 }
@@ -387,11 +397,14 @@
             topCard = getRandomCard();
             if (topCard.color === 'wild') topCard.color = 'red';
 
+            isInitialized = true;
             render();
         }
 
-        // Запускаем только после полной загрузки HTML
+        // Тройная защита для запуска:
         document.addEventListener('DOMContentLoaded', initGame);
+        window.addEventListener('load', initGame);
+        setTimeout(initGame, 100);
     </script>
 </body>
 </html>
