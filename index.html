@@ -1,0 +1,71 @@
+<div class="header">
+        <h2 id="username">👋 Привет, Игрок!</h2>
+    </div>
+
+    <div class="poker-table">
+        <div class="shuffler" id="shuffler" onclick="startShuffle()">⚙️</div>
+        
+        <div class="card" id="animatedCard">♥️</div>
+    </div>
+
+    <div class="controls">
+        <button class="btn-action" onclick="startShuffle()">РАЗДАТЬ КАРТЫ</button>
+    </div>
+
+    <script>
+        // Инициализация Telegram WebApp
+        const tg = window.Telegram.WebApp;
+        tg.expand(); // Разворачиваем на полный экран
+
+        // Получаем имя пользователя из Telegram
+        if (tg.initDataUnsafe && tg.initDataUnsafe.user) {
+            document.getElementById('username').innerText = '👋 Привет, ' + tg.initDataUnsafe.user.first_name + '!';
+        }
+
+        const shuffler = document.getElementById('shuffler');
+        const card = document.getElementById('animatedCard');
+        let isShuffling = false;
+
+        function startShuffle() {
+            if (isShuffling) return;
+            isShuffling = true;
+
+            // Включаем вращение крутилки
+            shuffler.classList.add('spinning');
+            shuffler.innerText = '🌀';
+
+            // Имитация раздачи 3 карт
+            let cardCount = 0;
+            const interval = setInterval(() => {
+                shootCard();
+                cardCount++;
+                if (cardCount >= 3) {
+                    clearInterval(interval);
+                    setTimeout(() => {
+                        shuffler.classList.remove('spinning');
+                        shuffler.innerText = '⚙️';
+                        isShuffling = false;
+                    }, 500);
+                }
+            }, 400);
+        }
+
+        function shootCard() {
+            // Сброс позиции карты в центр
+            card.style.transition = 'none';
+            card.style.transform = 'translate(0, 0) scale(0.2) rotate(0deg)';
+            card.style.opacity = '1';
+
+            // Случайный угол разлета (вниз к игроку)
+            const randomX = (Math.random() - 0.5) * 160;
+            const targetY = 130; 
+            const randomRot = (Math.random() - 0.5) * 60;
+
+            setTimeout(() => {
+                card.style.transition = 'all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275)';
+                card.style.transform = translate(${randomX}px, ${targetY}px) scale(1) rotate(${randomRot}deg);
+            }, 20);
+        }
+    </script>
+</body>
+</html>
