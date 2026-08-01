@@ -1,8 +1,8 @@
-[01.08.2026 15:22] kapibara个⁬: <!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <title>UNO Sound Master</title>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <style>
@@ -22,6 +22,7 @@
             padding: 0;
             user-select: none;
             -webkit-user-select: none;
+            -webkit-touch-callout: none;
         }
 
         body {
@@ -33,6 +34,7 @@
             display: flex;
             flex-direction: column;
             justify-content: space-between;
+            padding-bottom: env(safe-area-inset-bottom);
         }
 
         .header {
@@ -40,8 +42,9 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            background: rgba(30, 41, 59, 0.8);
-            backdrop-filter: blur(8px);
+            background: rgba(30, 41, 59, 0.9);
+            backdrop-filter: blur(10px);
+            z-index: 10;
         }
 
         .opponents-bar {
@@ -49,6 +52,7 @@
             justify-content: center;
             gap: 15px;
             padding: 10px;
+            z-index: 5;
         }
 
         .opponent {
@@ -57,6 +61,11 @@
             border-radius: 12px;
             font-size: 0.8rem;
             text-align: center;
+            border: 1px solid transparent;
+        }
+
+        .opponent.active {
+            border-color: var(--uno-yellow);
         }
 
         .table-area {
@@ -78,7 +87,7 @@
             font-weight: bold;
             box-shadow: 0 8px 16px rgba(0,0,0,0.4);
             position: relative;
-            transition: transform 0.15s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            transition: transform 0.15s ease, box-shadow 0.15s ease;
         }
 
         .deck {
@@ -90,6 +99,7 @@
 
         .deck:active {
             transform: scale(0.92);
+            box-shadow: 0 2px 8px rgba(0,0,0,0.4);
         }
 
         .card {
@@ -106,7 +116,7 @@
             font-weight: 900;
             cursor: pointer;
             position: relative;
-            transition: transform 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275), left 0.2s;
+            transition: transform 0.25s cubic-bezier(0.175, 0.885, 0.32, 1.275), left 0.25s;
         }
 
         .card.red { background-color: var(--uno-red); color: white; }
@@ -116,25 +126,29 @@
         .card.wild { background: linear-gradient(45deg, var(--uno-red), var(--uno-blue), var(--uno-green), var(--uno-yellow)); color: white; }
 
         .card-val {
-            font-size: 1.5rem;
+            font-size: 1.6rem;
             text-shadow: 1px 1px 2px rgba(0,0,0,0.4);
         }
-
-        .color-indicator {
+[01.08.2026 15:25] kapibara个⁬: .color-indicator {
             position: absolute;
-            width: 16px;
-            height: 16px;
+            width: 18px;
+            height: 18px;
             border-radius: 50%;
-            top: -24px;
+            top: -28px;
             border: 2px solid white;
-            box-shadow: 0 0 8px currentColor;
+            box-shadow: 0 0 10px currentColor;
+            opacity: 0;
+            transition: opacity 0.2s;
         }
-[01.08.2026 15:22] kapibara个⁬: .hand-container {
+
+        .hand-container {
             height: 140px;
             display: flex;
             justify-content: center;
             align-items: flex-end;
-            padding-bottom: 15px;
+            padding-bottom: 20px;
+            position: relative;
+            z-index: 10;
         }
 
         .hand {
@@ -152,8 +166,9 @@
         }
 
         .hand .card:active {
-            transform: translateY(-30px) scale(1.2) !important;
+            transform: translateY(-35px) scale(1.25) !important;
             z-index: 100 !important;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.5);
         }
 
         .color-picker {
@@ -166,6 +181,7 @@
             backdrop-filter: blur(10px);
             z-index: 200;
             border: 1px solid #334155;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.5);
         }
 
         .color-btn {
@@ -174,32 +190,38 @@
             border-radius: 50%;
             border: 3px solid white;
             cursor: pointer;
-            transition: transform 0.1s;
+            transition: transform 0.1s, box-shadow 0.1s;
         }
 
         .color-btn:active {
             transform: scale(0.85);
+            box-shadow: 0 0 15px currentColor;
         }
 
         .uno-btn {
             position: absolute;
             right: 15px;
-            bottom: 140px;
-            width: 60px;
-            height: 60px;
+            bottom: 150px;
+            width: 65px;
+            height: 65px;
             border-radius: 50%;
             background: linear-gradient(135deg, #f59e0b, #ef4444);
-            border: 3px solid white;
+            border: 4px solid white;
             color: white;
             font-weight: 900;
-            font-size: 0.9rem;
-            box-shadow: 0 4px 15px rgba(239, 68, 68, 0.5);
+            font-size: 1rem;
+            box-shadow: 0 6px 20px rgba(239, 68, 68, 0.6);
             cursor: pointer;
-            transition: transform 0.1s;
+            transition: transform 0.1s, box-shadow 0.1s;
+            z-index: 50;
+            display: flex;
+            justify-content: center;
+            align-items: center;
         }
 
         .uno-btn:active {
             transform: scale(0.88);
+            box-shadow: 0 2px 10px rgba(239, 68, 68, 0.6);
         }
     </style>
 </head>
@@ -211,7 +233,7 @@
     </div>
 
     <div class="opponents-bar">
-        <div class="opponent">🤖 Бот 1 (7 карт)</div>
+        <div class="opponent active">🤖 Бот 1 (7 карт)</div>
         <div class="opponent">🤖 Бот 2 (7 карт)</div>
     </div>
 
@@ -237,18 +259,28 @@
     <div class="hand-container">
         <div class="hand" id="player-hand"></div>
     </div>
+[01.08.2026 15:25] kapibara个⁬: <script>
+        // Ждём полной загрузки DOM и SDK
+        window.addEventListener('load', function() {
+            const tg = window.Telegram.WebApp;
+            tg.ready(); // Сообщаем Telegram, что мы готовы
+            tg.expand();
 
-    <script>
-        const tg = window.Telegram.WebApp;
-        tg.expand();
+            // Попытка разблокировать аудио контекст сразу
+            if (window.AudioContext || window.webkitAudioContext) {
+                const initCtx = new (window.AudioContext || window.webkitAudioContext)();
+                initCtx.resume();
+            }
+
+            initGame();
+        });
 
         // --- СОЧНЫЙ ЗВУКОВОЙ ДВИЖОК (Web Audio API) ---
-        const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-
+        let audioCtx;
+        
         function playSound(type) {
-            if (audioCtx.state === 'suspended') {
-                audioCtx.resume();
-            }
+            if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+            if (audioCtx.state === 'suspended') audioCtx.resume();
 
             const osc = audioCtx.createOscillator();
             const gain = audioCtx.createGain();
@@ -258,48 +290,42 @@
             const now = audioCtx.currentTime;
 
             if (type === 'play') {
-                // Сочный соскок / клик броска карты
-[01.08.2026 15:22] kapibara个⁬: osc.type = 'triangle';
+                osc.type = 'triangle';
                 osc.frequency.setValueAtTime(320, now);
                 osc.frequency.exponentialRampToValueAtTime(80, now + 0.08);
                 gain.gain.setValueAtTime(0.5, now);
-                gain.gain.exponentialRampToValueAtTime(0.01, now + 0.08);
+                gain.gain.exponentialRampToValueAtTime(0.001, now + 0.08);
                 osc.start(now);
                 osc.stop(now + 0.08);
             } 
             else if (type === 'draw') {
-                // Шорох / свайп взятия карты из колоды
                 osc.type = 'sine';
                 osc.frequency.setValueAtTime(150, now);
                 osc.frequency.exponentialRampToValueAtTime(450, now + 0.06);
                 gain.gain.setValueAtTime(0.3, now);
-                gain.gain.exponentialRampToValueAtTime(0.01, now + 0.06);
+                gain.gain.exponentialRampToValueAtTime(0.001, now + 0.06);
                 osc.start(now);
                 osc.stop(now + 0.06);
             } 
             else if (type === 'error') {
-                // Низкий плотный «бум» ошибки
                 osc.type = 'sawtooth';
                 osc.frequency.setValueAtTime(110, now);
                 osc.frequency.linearRampToValueAtTime(60, now + 0.15);
                 gain.gain.setValueAtTime(0.4, now);
-                gain.gain.exponentialRampToValueAtTime(0.01, now + 0.15);
+                gain.gain.exponentialRampToValueAtTime(0.001, now + 0.15);
                 osc.start(now);
                 osc.stop(now + 0.15);
             } 
             else if (type === 'uno') {
-                // Праздничный победный аккорд
                 [523.25, 659.25, 783.99, 1046.50].forEach((freq, idx) => {
                     const noteOsc = audioCtx.createOscillator();
                     const noteGain = audioCtx.createGain();
                     noteOsc.connect(noteGain);
                     noteGain.connect(audioCtx.destination);
-                    
                     noteOsc.type = 'triangle';
                     noteOsc.frequency.setValueAtTime(freq, now + idx * 0.05);
-                    noteGain.gain.setValueAtTime(0.3, now + idx * 0.05);
-                    noteGain.gain.exponentialRampToValueAtTime(0.01, now + 0.4);
-                    
+                    noteGain.gain.setValueAtTime(0.2, now + idx * 0.05);
+                    noteGain.gain.exponentialRampToValueAtTime(0.001, now + 0.4);
                     noteOsc.start(now + idx * 0.05);
                     noteOsc.stop(now + 0.4);
                 });
@@ -314,28 +340,23 @@
         let topCard = { color: 'red', value: '7' };
 
         function initGame() {
-            playerHand = [
-                { color: 'red', value: '5' },
-                { color: 'blue', value: '+2' },
-                { color: 'green', value: '🔄' },
-                { color: 'yellow', value: '3' },
-                { color: 'wild', value: '🌈' },
-                { color: 'red', value: '🚫' }
-            ];
-
+            // Генерируем случайную стартовую руку
+            for(let i=0; i<7; i++) {
+                drawCard(true); // true = без звука при старте
+            }
             renderHand();
             renderDiscard();
         }
 
         function renderHand() {
             const handEl = document.getElementById('player-hand');
+            if (!handEl) return;
             handEl.innerHTML = '';
 
             const total = playerHand.length;
             const maxAngle = Math.min(total * 5, 30);
             const startAngle = -maxAngle / 2;
-
-            playerHand.forEach((card, i) => {
+[01.08.2026 15:25] kapibara个⁬: playerHand.forEach((card, i) => {
                 const cardEl = document.createElement('div');
                 cardEl.className = card ${card.color};
                 
@@ -352,19 +373,25 @@
                 handEl.appendChild(cardEl);
             });
         }
-[01.08.2026 15:22] kapibara个⁬: function renderDiscard() {
+
+        function renderDiscard() {
             const discardEl = document.getElementById('discard-pile');
+            const colorInd = document.getElementById('current-color');
+            if (!discardEl || !colorInd) return;
+            
             discardEl.className = discard-pile card ${topCard.color};
             discardEl.innerHTML = <div class="card-val">${topCard.value}</div>;
-            document.getElementById('current-color').style.backgroundColor = var(--uno-${topCard.color});
-            document.getElementById('current-color').style.color = var(--uno-${topCard.color});
+            
+            colorInd.style.backgroundColor = var(--uno-${topCard.color});
+            colorInd.style.color = var(--uno-${topCard.color});
+            colorInd.style.opacity = 1;
         }
 
         function playCard(index) {
             const card = playerHand[index];
+            const tg = window.Telegram.WebApp;
 
             if (card.color === topCard.color  card.value === topCard.value  card.color === 'wild') {
-                // Сочный звук + вибрация
                 playSound('play');
                 if (tg.HapticFeedback) tg.HapticFeedback.impactOccurred('medium');
 
@@ -379,7 +406,6 @@
 
                 renderHand();
             } else {
-                // Звук ошибки + вибро
                 playSound('error');
                 if (tg.HapticFeedback) tg.HapticFeedback.notificationOccurred('error');
             }
@@ -392,24 +418,26 @@
             renderDiscard();
         }
 
-        function drawCard() {
-            playSound('draw');
-            if (tg.HapticFeedback) tg.HapticFeedback.impactOccurred('light');
+        function drawCard(silent = false) {
+            if (!silent) {
+                playSound('draw');
+                const tg = window.Telegram.WebApp;
+                if (tg.HapticFeedback) tg.HapticFeedback.impactOccurred('light');
+            }
 
             const randomColor = colors[Math.floor(Math.random() * colors.length)];
             const randomVal = values[Math.floor(Math.random() * values.length)];
             
             playerHand.push({ color: randomColor, value: randomVal });
-            renderHand();
+            if (!silent) renderHand();
         }
 
         function sayUno() {
             playSound('uno');
+            const tg = window.Telegram.WebApp;
             if (tg.HapticFeedback) tg.HapticFeedback.notificationOccurred('success');
             tg.showAlert('🔥 UNO!');
         }
-
-        initGame();
     </script>
 </body>
 </html>
