@@ -1,70 +1,147 @@
-<div class="header">
-        <h2 id="username">👋 Привет, Игрок!</h2>
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Cards Hub</title>
+    <!-- Telegram WebApp SDK -->
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <style>
+        :root {
+            --bg-color: #0f172a;
+            --card-bg: #1e293b;
+            --accent-color: #6366f1;
+            --accent-hover: #4f46e5;
+            --text-color: #f8fafc;
+            --text-muted: #94a3b8;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            user-select: none;
+            -webkit-user-select: none;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            padding: 20px;
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: var(--card-bg);
+            padding: 16px 20px;
+            border-radius: 16px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 1.1rem;
+            font-weight: 600;
+        }
+
+        .icons {
+            display: flex;
+            gap: 12px;
+            font-size: 1.2rem;
+        }
+
+        .game-area {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            gap: 20px;
+            margin: 40px 0;
+        }
+
+        .deck-placeholder {
+            width: 140px;
+            height: 200px;
+            border: 2px dashed rgba(255, 255, 255, 0.2);
+            border-radius: 12px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: var(--text-muted);
+            font-size: 0.9rem;
+            text-align: center;
+            padding: 10px;
+        }
+
+        .btn-primary {
+            width: 100%;
+            padding: 16px;
+            background-color: var(--accent-color);
+            color: white;
+            border: none;
+            border-radius: 14px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            box-shadow: 0 4px 12px rgba(99, 102, 241, 0.3);
+        }
+
+        .btn-primary:active {
+            transform: scale(0.98);
+            background-color: var(--accent-hover);
+        }
+    </style>
+</head>
+<body>
+
+    <div class="header">
+        <div class="user-info">
+            <span>👋</span>
+            <span id="username">Привет, Игрок!</span>
+        </div>
+        <div class="icons">
+            <span>⚙️</span>
+            <span>❤️</span>
+        </div>
     </div>
 
-    <div class="poker-table">
-        <div class="shuffler" id="shuffler" onclick="startShuffle()">⚙️</div>
-        
-        <div class="card" id="animatedCard">♥️</div>
+    <div class="game-area">
+        <div class="deck-placeholder" id="deck">
+            🂠<br>Игровой стол
+        </div>
     </div>
 
-    <div class="controls">
-        <button class="btn-action" onclick="startShuffle()">РАЗДАТЬ КАРТЫ</button>
-    </div>
+    <button class="btn-primary" id="deal-btn" onclick="dealCards()">🎴 Раздать карты</button>
 
     <script>
         // Инициализация Telegram WebApp
         const tg = window.Telegram.WebApp;
-        tg.expand(); // Разворачиваем на полный экран
+        tg.expand(); // Разворачиваем окно на весь экран
 
-        // Получаем имя пользователя из Telegram
+        // Автоподтягивание имени из профиля Telegram
         if (tg.initDataUnsafe && tg.initDataUnsafe.user) {
-            document.getElementById('username').innerText = '👋 Привет, ' + tg.initDataUnsafe.user.first_name + '!';
+            document.getElementById('username').innerText = 'Привет, ' + tg.initDataUnsafe.user.first_name + '!';
         }
-
-        const shuffler = document.getElementById('shuffler');
-        const card = document.getElementById('animatedCard');
-        let isShuffling = false;
-
-        function startShuffle() {
-            if (isShuffling) return;
-            isShuffling = true;
-
-            // Включаем вращение крутилки
-            shuffler.classList.add('spinning');
-            shuffler.innerText = '🌀';
-
-            // Имитация раздачи 3 карт
-            let cardCount = 0;
-            const interval = setInterval(() => {
-                shootCard();
-                cardCount++;
-                if (cardCount >= 3) {
-                    clearInterval(interval);
-                    setTimeout(() => {
-                        shuffler.classList.remove('spinning');
-                        shuffler.innerText = '⚙️';
-                        isShuffling = false;
-                    }, 500);
-                }
-            }, 400);
-        }
-
-        function shootCard() {
-            // Сброс позиции карты в центр
-            card.style.transition = 'none';
-            card.style.transform = 'translate(0, 0) scale(0.2) rotate(0deg)';
-            card.style.opacity = '1';
-
-            // Случайный угол разлета (вниз к игроку)
-            const randomX = (Math.random() - 0.5) * 160;
-            const targetY = 130; 
-            const randomRot = (Math.random() - 0.5) * 60;
-
-            setTimeout(() => {
-                card.style.transition = 'all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275)';
-                card.style.transform = translate(${randomX}px, ${targetY}px) scale(1) rotate(${randomRot}deg);
-            }, 20);
+        function dealCards() {
+            // Эффект легкой вибрации смартфона при нажатии
+            if (tg.HapticFeedback) {
+                tg.HapticFeedback.impactOccurred('medium');
+            }
+            
+            const deck = document.getElementById('deck');
+            deck.style.borderColor = '#6366f1';
+            deck.innerHTML = '✨ Cards Dealt!';
         }
     </script>
 </body>
