@@ -7,13 +7,15 @@
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <style>
         :root {
-            --c-red: #ff4757;
-            --c-blue: #1e90ff;
-            --c-green: #2ed573;
-            --c-yellow: #ffa502;
-            --c-wild: linear-gradient(135deg, #ff4757, #1e90ff, #2ed573, #ffa502);
-            --card-w: 68px;
-            --card-h: 102px;
+            --bg-dark: #0f172a;
+            --card-w: 64px;
+            --card-h: 96px;
+            --c-red: #ff3b30;
+            --c-blue: #007aff;
+            --c-green: #34c759;
+            --c-yellow: #ffcc00;
+            --accent-pink: #ec4899;
+            --accent-cyan: #06b6d4;
         }
 
         * {
@@ -26,221 +28,184 @@
 
         body {
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-            /* Сочный изумрудно-бирюзовый градиент */
-            background: radial-gradient(circle at center, #11998e 0%, #38ef7d 100%);
+            background: radial-gradient(circle at top, #1e1b4b 0%, var(--bg-dark) 100%);
             color: #ffffff;
             height: 100vh;
+            width: 100vw;
             overflow: hidden;
             display: flex;
             flex-direction: column;
             justify-content: space-between;
-            position: relative;
-        }
-
-        /* Динамичный светлый паттерн 101 */
-        .bg-pattern {
-            position: absolute;
-            top: -50%;
-            left: -50%;
-            width: 200%;
-            height: 200%;
-            background-image: url("data:image/svg+xml,%3Csvg width='100' height='50' viewBox='0 0 100 50' xmlns='http://www.w3.org/2000/svg'%3E%3Ctext x='10' y='32' fill='rgba(255,255,255,0.12)' font-size='22' font-weight='900' font-family='sans-serif'%3E101%3C/text%3E%3C/svg%3E");
-            animation: floatingBg 25s linear infinite;
-            z-index: 1;
-            pointer-events: none;
-        }
-
-        @keyframes floatingBg {
-            0% { transform: translate(0, 0) rotate(-3deg); }
-            100% { transform: translate(-100px, -50px) rotate(-3deg); }
         }
 
         /* Шапка */
-        .header {
-            padding: 12px 18px;
+        .top-bar {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            background: rgba(0, 0, 0, 0.2);
+            padding: 12px 16px;
+            background: rgba(15, 23, 42, 0.8);
             backdrop-filter: blur(12px);
-            z-index: 10;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.15);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            z-index: 20;
         }
 
         .title {
             font-weight: 900;
             font-size: 1.1rem;
-            letter-spacing: 0.5px;
-            text-shadow: 0 2px 4px rgba(0,0,0,0.2);
+            background: linear-gradient(135deg, var(--accent-pink), var(--accent-cyan));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
         }
 
-        .status-badge {
-            background: #ffffff;
-            color: #11998e;
+        .turn-badge {
+            background: linear-gradient(135deg, #10b981, #059669);
+            color: #ffffff;
             padding: 6px 14px;
             border-radius: 20px;
-            font-size: 0.85rem;
             font-weight: 800;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            font-size: 0.8rem;
+            box-shadow: 0 0 12px rgba(16, 185, 129, 0.4);
         }
 
         /* Соперники */
-        .opponents-bar {
+        .bot-area {
             display: flex;
             justify-content: center;
-            gap: 16px;
-            padding: 10px;
+            gap: 12px;
+            padding: 12px 0 0 0;
             z-index: 10;
         }
 
-        .opponent {
-            background: rgba(0, 0, 0, 0.25);
-            backdrop-filter: blur(8px);
-            color: #fff;
+        .bot-tag {
+            background: rgba(255, 255, 255, 0.05);
             padding: 8px 16px;
             border-radius: 16px;
             font-size: 0.85rem;
             font-weight: 700;
-            border: 2px solid rgba(255, 255, 255, 0.2);
+            border: 1px solid rgba(255, 255, 255, 0.15);
             transition: all 0.3s ease;
         }
 
-        .opponent.active {
-            border-color: #ffa502;
-            background: rgba(255, 165, 2, 0.35);
-            transform: scale(1.05);
-            box-shadow: 0 0 15px rgba(255, 165, 2, 0.5);
+        .bot-tag.active {
+            border-color: var(--accent-cyan);
+            background: rgba(6, 182, 212, 0.2);
+            box-shadow: 0 0 15px rgba(6, 182, 212, 0.4);
         }
 
-        /* Стол */
-        .table-area {
+        /* Игровое поле */
+        .table {
             flex: 1;
             display: flex;
             justify-content: center;
             align-items: center;
             gap: 24px;
             position: relative;
-            z-index: 10;
         }
-     /* Карты */
-        .card {
+
+        .card-slot {
             width: var(--card-w);
             height: var(--card-h);
             border-radius: 12px;
             background: #ffffff;
+            color: #000;
             display: flex;
-            flex-direction: column;
             justify-content: center;
             align-items: center;
-            box-shadow: 0 8px 20px rgba(0,0,0,0.25);
-            border: 3.5px solid #ffffff;
             font-weight: 900;
-            cursor: pointer;
+            font-size: 1.7rem;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.5);
+            border: 3px solid #ffffff;
             position: relative;
-            font-size: 1.8rem;
-            transition: transform 0.2s ease, box-shadow 0.2s ease;
+            flex-shrink: 0;
         }
 
-        .card.red { background: var(--c-red); color: white; }
-        .card.blue { background: var(--c-blue); color: white; }
-        .card.green { background: var(--c-green); color: white; }
-        .card.yellow { background: var(--c-yellow); color: white; }
-        .card.wild { background: var(--c-wild); color: white; }
-
-        .deck {
-            background: linear-gradient(135deg, #2c3e50, #000000);
-            color: #ffffff;
-            border: 3px solid rgba(255, 255, 255, 0.8);
+        .deck-slot {
+            background: linear-gradient(135deg, #312e81, #1e1b4b);
+            color: #fff;
+            border-color: var(--accent-pink);
+            cursor: pointer;
             font-size: 0.85rem;
             text-align: center;
-            line-height: 1.2;
+            box-shadow: 0 0 15px rgba(236, 72, 153, 0.3);
         }
 
-        .deck:active { transform: scale(0.92); }
+        .deck-slot:active { transform: scale(0.92); }
+        .card-slot.red { background: var(--c-red); color: white; }
+        .card-slot.blue { background: var(--c-blue); color: white; }
+        .card-slot.green { background: var(--c-green); color: white; }
+        .card-slot.yellow { background: var(--c-yellow); color: white; }
+        .card-slot.wild { background: linear-gradient(135deg, var(--c-red), var(--c-blue), var(--c-green), var(--c-yellow)); color: white; }
 
-        .color-indicator {
-            position: absolute;
-            width: 22px;
-            height: 22px;
-            border-radius: 50%;
-            top: -30px;
-            border: 3px solid white;
-            box-shadow: 0 0 12px currentColor;
-        }
-
-        /* Зона руки игрока */
-        .hand-container {
-            height: 170px;
-            width: 100%;
+        /* Фиксированная зона карт игрока */
+        .player-zone {
+            background: rgba(15, 23, 42, 0.85);
+            backdrop-filter: blur(10px);
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 15px 10px 25px 10px;
             display: flex;
-            justify-content: center;
-            align-items: flex-end;
-            padding-bottom: 20px;
-            position: relative;
+            flex-direction: column;
+            align-items: center;
             z-index: 20;
-            background: linear-gradient(to top, rgba(0,0,0,0.3), transparent);
         }
 
-        .hand {
-            display: flex;
-            justify-content: center;
-            align-items: flex-end;
-            width: 100%;
-            height: 100%;
-            position: relative;
-        }
-
-        .hand .card {
-            position: absolute;
-            bottom: 10px;
-            transform-origin: bottom center;
-            box-shadow: -4px 4px 15px rgba(0,0,0,0.3);
-        }
-
-        .hand .card:active, .hand .card:hover {
-            bottom: 35px !important;
-            transform: scale(1.25) rotate(0deg) !important;
-            z-index: 300 !important;
-            box-shadow: 0 12px 25px rgba(0,0,0,0.4);
-        }
-
-        /* Кнопка 101 */
-        .btn-101 {
-            position: absolute;
-            right: 18px;
-            bottom: 170px;
-            width: 65px;
-            height: 65px;
-            border-radius: 50%;
-            background: linear-gradient(135deg, #ff4757, #ff6b81);
-            border: 3.5px solid white;
-            color: white;
-            font-weight: 900;
-            font-size: 1.1rem;
-            box-shadow: 0 8px 20px rgba(255, 71, 87, 0.5);
-            cursor: pointer;
-            z-index: 50;
+        .cards-hand {
             display: flex;
             justify-content: center;
             align-items: center;
+            gap: 8px;
+            overflow-x: auto;
+            max-width: 100vw;
+            padding: 10px 15px;
+            width: 100%;
+        }
+
+        .cards-hand .card-slot {
+            cursor: pointer;
+            transition: transform 0.2s ease;
+        }
+
+        .cards-hand .card-slot:active {
+            transform: translateY(-15px) scale(1.1);
+        }
+
+        /* Неоновая кнопка 101 */
+        .btn-101 {
+            position: fixed;
+            right: 18px;
+            bottom: 160px;
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--accent-pink), #f43f5e);
+            border: 3px solid #ffffff;
+            color: white;
+            font-weight: 900;
+            font-size: 1rem;
+            box-shadow: 0 0 20px rgba(236, 72, 153, 0.6);
+            cursor: pointer;
+            z-index: 50;
         }
 
         .btn-101:active { transform: scale(0.9); }
 
-        /* Выбор цвета */
+        /* Диалог выбора цвета */
         .color-picker {
             display: none;
-            position: absolute;
-            gap: 15px;
-            background: rgba(0, 0, 0, 0.85);
-            padding: 18px;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: rgba(15, 23, 42, 0.95);
+            border: 2px solid var(--accent-cyan);
+            padding: 20px;
             border-radius: 24px;
-            backdrop-filter: blur(12px);
-            z-index: 400;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+            gap: 15px;
+            z-index: 200;
+            box-shadow: 0 0 30px rgba(6, 182, 212, 0.4);
         }
 
-        .color-btn {
+        .c-btn {
             width: 48px;
             height: 48px;
             border-radius: 50%;
@@ -251,38 +216,34 @@
 </head>
 <body>
 
-    <div class="bg-pattern"></div>
-
-    <div class="header">
-        <div class="title">🎴 CARDS 101</div>
-        <div class="status-badge" id="status-label">Твой ход</div>
-    </div>
-    <div class="opponents-bar">
-        <div class="opponent" id="p1-label">🤖 Бот 1 (7)</div>
-        <div class="opponent" id="p2-label">🤖 Бот 2 (7)</div>
+    <div class="top-bar">
+        <div class="title">CARDS 101</div>
+        <div class="turn-badge" id="status-label">Твой ход</div>
     </div>
 
-    <div class="table-area">
-        <div class="color-indicator" id="current-color"></div>
-        
-        <div class="card deck" onclick="playerDraw()">
+    <div class="bot-area">
+        <div class="bot-tag" id="b1-tag">🤖 Бот 1: 7</div>
+        <div class="bot-tag" id="b2-tag">🤖 Бот 2: 7</div>
+    </div>
+
+    <div class="table">
+        <div class="card-slot deck-slot" onclick="playerDraw()">
             🂠<br>Взять
         </div>
-
-        <div class="card" id="discard-pile"></div>
-
-        <div class="color-picker" id="color-picker">
-            <div class="color-btn" style="background: var(--c-red)" onclick="selectColor('red')"></div>
-            <div class="color-btn" style="background: var(--c-blue)" onclick="selectColor('blue')"></div>
-            <div class="color-btn" style="background: var(--c-green)" onclick="selectColor('green')"></div>
-            <div class="color-btn" style="background: var(--c-yellow)" onclick="selectColor('yellow')"></div>
-        </div>
+        <div class="card-slot" id="discard-pile">--</div>
     </div>
 
     <button class="btn-101" onclick="say101()">101!</button>
 
-    <div class="hand-container">
-        <div class="hand" id="player-hand"></div>
+    <div class="player-zone">
+        <div class="cards-hand" id="player-hand"></div>
+    </div>
+
+    <div class="color-picker" id="color-picker">
+        <div class="c-btn" style="background: var(--c-red)" onclick="selectColor('red')"></div>
+        <div class="c-btn" style="background: var(--c-blue)" onclick="selectColor('blue')"></div>
+        <div class="c-btn" style="background: var(--c-green)" onclick="selectColor('green')"></div>
+        <div class="c-btn" style="background: var(--c-yellow)" onclick="selectColor('yellow')"></div>
     </div>
 
     <script>
@@ -291,75 +252,57 @@
 
         const colors = ['red', 'blue', 'green', 'yellow'];
         const values = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '🚫', '🔄', '+2'];
-
-        let turn = 0; // 0 - Игрок, 1 - Бот 1, 2 - Бот 2
+        let turn = 0;
         let playerHand = [];
-        let bot1Hand = 7;
-        let bot2Hand = 7;
+        let b1Cards = 7;
+        let b2Cards = 7;
         let topCard = { color: 'red', value: '7' };
 
         function getRandomCard() {
-            const isWild = Math.random() < 0.08;
-            if (isWild) return { color: 'wild', value: '🌈' };
+            if (Math.random() < 0.08) return { color: 'wild', value: '🌈' };
             return {
                 color: colors[Math.floor(Math.random() * colors.length)],
                 value: values[Math.floor(Math.random() * values.length)]
             };
         }
 
-        function initGame() {
+        function init() {
             playerHand = Array.from({length: 7}, () => getRandomCard());
             topCard = getRandomCard();
             if (topCard.color === 'wild') topCard.color = 'red';
-            
-            renderAll();
+            render();
         }
 
-        function renderAll() {
+        function render() {
             const handEl = document.getElementById('player-hand');
             handEl.innerHTML = '';
             
-            const total = playerHand.length;
-            
-            // Расчет позиции карт, чтобы они не вылетали за экран
-            const containerWidth = Math.min(window.innerWidth - 40, 420);
-            const cardWidth = 55; 
-            const step = total > 1 ? Math.min(cardWidth, (containerWidth - cardWidth) / (total - 1)) : 0;
-            const startX = -((total - 1) * step) / 2;
-
             playerHand.forEach((card, i) => {
-                const cardEl = document.createElement('div');
-                cardEl.className = card ${card.color};
-                
-                const posX = startX + (i * step);
-                const rot = (i - (total - 1) / 2) * 4;
-
-                cardEl.style.transform = translateX(${posX}px) rotate(${rot}deg);
-                cardEl.style.zIndex = i + 1;
-                cardEl.innerHTML = card.value;
-                cardEl.onclick = () => playCard(i);
-
-                handEl.appendChild(cardEl);
+                const c = document.createElement('div');
+                c.className = card-slot ${card.color};
+                c.innerText = card.value;
+                c.onclick = () => playCard(i);
+                handEl.appendChild(c);
             });
 
-            // Отображение скинутой карты
-            const discardEl = document.getElementById('discard-pile');
-            discardEl.className = card ${topCard.color};
-            discardEl.innerHTML = topCard.value;
+            const discard = document.getElementById('discard-pile');
+            discard.className = card-slot ${topCard.color};
+            discard.innerText = topCard.value;
 
-            document.getElementById('current-color').style.backgroundColor = var(--c-${topCard.color});
-            document.getElementById('current-color').style.color = var(--c-${topCard.color});
+            document.getElementById('b1-tag').innerText = 🤖 Бот 1: ${b1Cards};
+            document.getElementById('b2-tag').innerText = 🤖 Бот 2: ${b2Cards};
             
-            // Состояние ботов
-            document.getElementById('p1-label').innerText = 🤖 Бот 1 (${bot1Hand});
-            document.getElementById('p2-label').innerText = 🤖 Бот 2 (${bot2Hand});
+            document.getElementById('b1-tag').classList.toggle('active', turn === 1);
+            document.getElementById('b2-tag').classList.toggle('active', turn === 2);
 
-            document.getElementById('p1-label').classList.toggle('active', turn === 1);
-            document.getElementById('p2-label').classList.toggle('active', turn === 2);
-[01.08.2026 16:05] kapibara个⁬: const status = document.getElementById('status-label');
-            if (turn === 0) status.innerText = 'Твой ход';
-            else if (turn === 1) status.innerText = 'Ходит Бот 1...';
-            else status.innerText = 'Ходит Бот 2...';
+            const st = document.getElementById('status-label');
+            if (turn === 0) { 
+                st.innerText = 'Твой ход'; 
+                st.style.background = 'linear-gradient(135deg, #10b981, #059669)'; 
+            } else { 
+                st.innerText = 'Ход бота...'; 
+                st.style.background = 'linear-gradient(135deg, #f59e0b, #d97706)'; 
+            }
         }
 
         function playCard(idx) {
@@ -368,14 +311,13 @@
 
             if (card.color === topCard.color  card.value === topCard.value  card.color === 'wild') {
                 playerHand.splice(idx, 1);
-
                 if (card.color === 'wild') {
                     document.getElementById('color-picker').style.display = 'flex';
                 } else {
                     topCard = card;
                     nextTurn();
                 }
-                renderAll();
+                render();
             }
         }
 
@@ -383,48 +325,41 @@
             topCard = { color: col, value: '🌈' };
             document.getElementById('color-picker').style.display = 'none';
             nextTurn();
-            renderAll();
+            render();
         }
 
         function playerDraw() {
             if (turn !== 0) return;
             playerHand.push(getRandomCard());
             nextTurn();
-            renderAll();
+            render();
         }
 
         function nextTurn() {
             turn = (turn + 1) % 3;
-            renderAll();
-
-            if (turn !== 0) {
-                setTimeout(botTurn, 1000);
-            }
+            render();
+            if (turn !== 0) setTimeout(botStep, 1000);
         }
 
-        function botTurn() {
-            let bHand = turn === 1 ? bot1Hand : bot2Hand;
-            
-            if (Math.random() > 0.35) {
-                bHand = Math.max(1, bHand - 1);
-                topCard = getRandomCard();
-                if (topCard.color === 'wild') topCard.color = colors[Math.floor(Math.random() * 4)];
+        function botStep() {
+            if (turn === 1) {
+                if (Math.random() > 0.4) b1Cards = Math.max(1, b1Cards - 1);
+                else b1Cards++;
             } else {
-                bHand++;
+                if (Math.random() > 0.4) b2Cards = Math.max(1, b2Cards - 1);
+                else b2Cards++;
             }
-
-            if (turn === 1) bot1Hand = bHand;
-            else bot2Hand = bHand;
-
+            topCard = getRandomCard();
+            if (topCard.color === 'wild') topCard.color = colors[Math.floor(Math.random() * 4)];
             nextTurn();
         }
 
         function say101() {
-            if (tg && tg.showAlert) tg.showAlert('🎉 101!');
-            else alert('🎉 101!');
+            if (tg && tg.showAlert) tg.showAlert('🔥 101!');
+            else alert('🔥 101!');
         }
 
-        initGame();
+        init();
     </script>
 </body>
 </html>
