@@ -8,13 +8,12 @@
     <style>
         :root {
             --bg-gradient: linear-gradient(135deg, #a1c4fd 0%, #c2e9fb 50%, #e0c3fc 100%);
-            --card-w: 62px;
-            --card-h: 90px;
+            --card-w: 60px;
+            --card-h: 88px;
             --c-red: #ff4757;
             --c-blue: #2ed573;
             --c-green: #1e90ff;
             --c-yellow: #ffa502;
-            --accent-pink: #ff6b81;
             --text-main: #2f3542;
         }
 
@@ -51,7 +50,6 @@
             background: rgba(255, 255, 255, 0.4);
             backdrop-filter: blur(15px);
             border-bottom: 1px solid rgba(255, 255, 255, 0.6);
-            box-shadow: 0 4px 15px rgba(31, 38, 135, 0.07);
             flex-shrink: 0;
         }
 
@@ -70,7 +68,6 @@
             border-radius: 20px;
             font-weight: 800;
             font-size: 0.75rem;
-            box-shadow: 0 4px 10px rgba(46, 213, 115, 0.3);
         }
 
         /* Боты */
@@ -93,7 +90,6 @@
             font-weight: 800;
             color: #2f3542;
             border: 1px solid rgba(255, 255, 255, 0.8);
-            box-shadow: 0 4px 10px rgba(0,0,0,0.05);
         }
 
         .bot-tag.active {
@@ -102,13 +98,13 @@
             color: #ff4757;
         }
 
-        /* Стол */
+        /* Игровой стол */
         .table {
             flex: 1;
             display: flex;
             justify-content: center;
             align-items: center;
-            gap: 24px;
+            gap: 20px;
             min-height: 100px;
         }
 
@@ -116,58 +112,56 @@
         .card-slot {
             width: var(--card-w);
             height: var(--card-h);
-            border-radius: 14px;
-            background: rgba(255, 255, 255, 0.9);
+            border-radius: 12px;
+            background: rgba(255, 255, 255, 0.95);
             color: #2f3542;
             display: flex;
             flex-direction: column;
             justify-content: center;
             align-items: center;
             font-weight: 900;
-            font-size: 1.5rem;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+            font-size: 1.4rem;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.1);
             border: 2px solid rgba(255, 255, 255, 0.9);
             flex-shrink: 0;
         }
+
         .deck-slot {
             background: linear-gradient(135deg, #ff6b81, #ff4757);
             color: #fff;
             border-color: #ffa502;
             cursor: pointer;
-            font-size: 0.8rem;
+            font-size: 0.75rem;
             text-align: center;
         }
-
         .card-slot.red { background: var(--c-red); color: white; border-color: #ff7f50; }
         .card-slot.blue { background: var(--c-blue); color: white; border-color: #7bed9f; }
         .card-slot.green { background: var(--c-green); color: white; border-color: #70a1ff; }
         .card-slot.yellow { background: var(--c-yellow); color: #fff; border-color: #eccc68; }
         .card-slot.wild { background: linear-gradient(135deg, var(--c-red), var(--c-yellow), var(--c-blue), var(--c-green)); color: white; }
 
-        /* Фиксированная зона карт игрока */
+        /* Зона карт игрока */
         .player-zone {
-            height: 130px;
+            height: 125px;
             background: rgba(255, 255, 255, 0.45);
             backdrop-filter: blur(16px);
             border-top: 1px solid rgba(255, 255, 255, 0.7);
             display: flex;
             align-items: center;
-            padding: 10px 16px;
+            padding: 10px;
             flex-shrink: 0;
             width: 100%;
         }
 
-        /* Исправлен баг со скроллом и выравниванием карт */
         .cards-hand {
             display: flex;
-            justify-content: flex-start;
+            justify-content: center;
             align-items: center;
-            gap: 12px;
+            gap: 8px;
             overflow-x: auto;
             width: 100%;
             height: 100%;
             padding: 5px;
-            margin: 0 auto;
         }
 
         .cards-hand .card-slot {
@@ -179,17 +173,17 @@
             transform: translateY(-12px);
         }
 
-        /* Анимированная кнопка 101 */
+        /* Кнопка 101 */
         @keyframes floatAnim {
-            0% { transform: translateY(0px); box-shadow: 0 6px 20px rgba(255, 71, 87, 0.4); }
-            50% { transform: translateY(-8px); box-shadow: 0 14px 28px rgba(255, 71, 87, 0.6); }
-            100% { transform: translateY(0px); box-shadow: 0 6px 20px rgba(255, 71, 87, 0.4); }
+            0% { transform: translateY(0px); }
+            50% { transform: translateY(-8px); }
+            100% { transform: translateY(0px); }
         }
 
         .btn-101 {
             position: fixed;
             right: 18px;
-            bottom: 145px;
+            bottom: 140px;
             width: 56px;
             height: 56px;
             border-radius: 50%;
@@ -200,6 +194,7 @@
             font-size: 0.95rem;
             cursor: pointer;
             z-index: 50;
+            box-shadow: 0 6px 20px rgba(255, 71, 87, 0.4);
             animation: floatAnim 2.5s ease-in-out infinite;
         }
 
@@ -242,7 +237,7 @@
     </div>
 
     <div class="table">
-        <div class="card-slot deck-slot" id="deck-btn">
+        <div class="card-slot deck-slot" id="deck-btn" onclick="playerDraw()">
             🂠<br>Взять
         </div>
         <div class="card-slot red" id="discard-pile">7</div>
@@ -251,7 +246,14 @@
     <button class="btn-101" onclick="say101()">101!</button>
 
     <div class="player-zone">
-        <div class="cards-hand" id="player-hand"></div>
+        <!-- Дефолтные карты висят в HTML, пока JS не перезапишет их -->
+        <div class="cards-hand" id="player-hand">
+            <div class="card-slot red">1</div>
+            <div class="card-slot blue">3</div>
+            <div class="card-slot green">5</div>
+            <div class="card-slot yellow">7</div>
+            <div class="card-slot red">9</div>
+        </div>
     </div>
         <div class="color-picker" id="color-picker">
         <div class="c-btn" style="background: var(--c-red)" onclick="selectColor('red')"></div>
@@ -378,9 +380,6 @@
                 }
             } catch (e) {}
 
-            const deckBtn = document.getElementById('deck-btn');
-            if (deckBtn) deckBtn.onclick = playerDraw;
-
             playerHand = Array.from({length: 7}, () => getRandomCard());
             topCard = getRandomCard();
             if (topCard.color === 'wild') topCard.color = 'red';
@@ -388,8 +387,8 @@
             render();
         }
 
-        document.addEventListener('DOMContentLoaded', initGame);
-        window.onload = initGame;
+        // Запуск СРАЗУ при достижении конца документа
+        initGame();
     </script>
 </body>
 </html>
