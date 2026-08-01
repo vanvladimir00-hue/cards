@@ -7,11 +7,9 @@
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <style>
         :root {
-            /* НАСЫЩЕННЫЙ, ЯРКИЙ, ФИОЛЕТОВО-СИНИЙ ФОН */
             --bg-gradient: radial-gradient(circle at 50% 30%, #3a1c71 0%, #2a0845 50%, #100526 100%);
             --card-w: 64px;
             --card-h: 92px;
-            /* НЕОНОВЫЕ ЯРКИЕ ЦВЕТА КАРТ */
             --c-red: #ff3366;
             --c-blue: #00d2ff;
             --c-green: #00e676;
@@ -132,7 +130,7 @@
             border: 2px solid rgba(255, 255, 255, 0.8);
             flex-shrink: 0;
         }
-        .deck-slot {
+         .deck-slot {
             background: linear-gradient(135deg, #ff3366, #7928ca);
             color: #fff;
             border-color: rgba(255, 255, 255, 0.5);
@@ -385,7 +383,6 @@
                 }
             } catch (e) {}
 
-            // Генерация карт игрока
             playerHand = Array.from({length: 7}, () => getRandomCard());
             topCard = getRandomCard();
             if (topCard.color === 'wild') topCard.color = 'red';
@@ -393,8 +390,8 @@
             render();
         }
 
-        // Запуск
-        initGame();
+        // Запускаем только после полной загрузки HTML
+        document.addEventListener('DOMContentLoaded', initGame);
     </script>
 </body>
 </html>
