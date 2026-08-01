@@ -35,16 +35,13 @@
         }
 
         body {
-            display: flex;
-            flex-direction: column;
-            justify-content: space-between;
             background: var(--bg-gradient);
             position: relative;
         }
 
         /* Шапка */
         .top-bar {
-            height: 52px;
+            height: 50px;
             display: flex;
             justify-content: space-between;
             align-items: center;
@@ -52,14 +49,11 @@
             background: rgba(255, 255, 255, 0.08);
             backdrop-filter: blur(20px);
             border-bottom: 1px solid rgba(255, 255, 255, 0.15);
-            flex-shrink: 0;
-            z-index: 10;
         }
 
         .title {
             font-weight: 900;
-            font-size: 1.3rem;
-            letter-spacing: 1px;
+            font-size: 1.2rem;
             background: linear-gradient(135deg, #00d2ff, #ff3366);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
@@ -68,11 +62,10 @@
         .turn-badge {
             background: linear-gradient(135deg, #00e676, #00d2ff);
             color: #000;
-            padding: 6px 16px;
+            padding: 5px 14px;
             border-radius: 20px;
             font-weight: 900;
             font-size: 0.8rem;
-            box-shadow: 0 0 15px rgba(0, 230, 118, 0.4);
         }
 
         /* Боты */
@@ -82,136 +75,99 @@
             justify-content: center;
             align-items: center;
             gap: 12px;
-            flex-shrink: 0;
             margin-top: 10px;
-            z-index: 10;
         }
 
         .bot-tag {
             background: rgba(255, 255, 255, 0.12);
-            backdrop-filter: blur(10px);
-            padding: 6px 16px;
-            border-radius: 16px;
-            font-size: 0.85rem;
+            padding: 6px 14px;
+            border-radius: 14px;
+            font-size: 0.8rem;
             font-weight: 800;
-            color: #ffffff;
             border: 1px solid rgba(255, 255, 255, 0.2);
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
-        }
-
-        .bot-tag.active {
-            border-color: #ff3366;
-            background: rgba(255, 51, 102, 0.3);
-            color: #ffffff;
-            box-shadow: 0 0 15px rgba(255, 51, 102, 0.6);
         }
 
         /* Игровой стол */
         .table {
-            flex: 1;
+            position: absolute;
+            top: 100px;
+            bottom: 150px;
+            left: 0;
+            right: 0;
             display: flex;
             justify-content: center;
             align-items: center;
-            gap: 24px;
-            min-height: 100px;
-            z-index: 5;
+            gap: 20px;
         }
 
-        /* Стили карт */
+        /* Карты */
         .card-slot {
             width: var(--card-w);
             height: var(--card-h);
-            border-radius: 14px;
+            border-radius: 12px;
             background: #ffffff;
             color: #100526;
             display: flex;
-            flex-direction: column;
             justify-content: center;
             align-items: center;
             font-weight: 900;
             font-size: 1.4rem;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.5);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.4);
             border: 2px solid rgba(255, 255, 255, 0.8);
             flex-shrink: 0;
         }
-         .deck-slot {
+
+        .deck-slot {
             background: linear-gradient(135deg, #ff3366, #7928ca);
             color: #fff;
-            border-color: rgba(255, 255, 255, 0.5);
             cursor: pointer;
-            font-size: 0.8rem;
+            font-size: 0.75rem;
             text-align: center;
         }
 
-        .card-slot.red { background: var(--c-red); color: white; border-color: #ff80ab; }
-        .card-slot.blue { background: var(--c-blue); color: #000; border-color: #80d8ff; }
-        .card-slot.green { background: var(--c-green); color: #000; border-color: #b9f6ca; }
-        .card-slot.yellow { background: var(--c-yellow); color: #000; border-color: #ffe57f; }
-        .card-slot.wild { 
-            background: linear-gradient(135deg, var(--c-red), var(--c-yellow), var(--c-green), var(--c-blue)); 
-            color: white; 
-            border-color: #ffffff;
-        }
-
-        /* Зона карт игрока (Явно поверх всего) */
+        .card-slot.red { background: var(--c-red); color: white; }
+        .card-slot.blue { background: var(--c-blue); color: #000; }
+        .card-slot.green { background: var(--c-green); color: #000; }
+        .card-slot.yellow { background: var(--c-yellow); color: #000; }
+        .card-slot.wild { background: linear-gradient(135deg, var(--c-red), var(--c-yellow), var(--c-green), var(--c-blue)); color: white; }
+         /* ЗОНА КАРТ ИГРОКА (ЖЕСТКАЯ ФИКСАЦИЯ СНИЗУ) */
         .player-zone {
-            height: 140px;
-            background: rgba(0, 0, 0, 0.45);
-            backdrop-filter: blur(25px);
-            border-top: 1px solid rgba(255, 255, 255, 0.2);
-            display: flex;
-            align-items: center;
-            padding: 10px 16px;
-            flex-shrink: 0;
+            position: fixed;
+            bottom: 0;
+            left: 0;
             width: 100%;
-            position: relative;
-            z-index: 100;
+            height: 130px;
+            background: rgba(0, 0, 0, 0.6);
+            backdrop-filter: blur(20px);
+            border-top: 2px solid rgba(255, 255, 255, 0.2);
+            z-index: 999;
+            padding: 10px;
         }
 
         .cards-hand {
             display: flex;
-            justify-content: flex-start;
             align-items: center;
-            gap: 12px;
+            gap: 10px;
             overflow-x: auto;
             width: 100%;
             height: 100%;
-            padding: 5px 0;
-            -webkit-overflow-scrolling: touch;
-        }
-
-        .cards-hand .card-slot {
-            cursor: pointer;
-            transition: transform 0.15s ease, box-shadow 0.15s ease;
-        }
-
-        .cards-hand .card-slot:active {
-            transform: translateY(-16px) scale(1.05);
-            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.6);
+            padding-bottom: 5px;
         }
 
         /* Кнопка 101 */
-        @keyframes pulse101 {
-            0% { transform: translateY(0px); box-shadow: 0 0 15px rgba(255, 51, 102, 0.5); }
-            50% { transform: translateY(-6px); box-shadow: 0 0 25px rgba(255, 51, 102, 0.9); }
-            100% { transform: translateY(0px); box-shadow: 0 0 15px rgba(255, 51, 102, 0.5); }
-        }
-
         .btn-101 {
             position: fixed;
-            right: 18px;
-            bottom: 155px;
-            width: 58px;
-            height: 58px;
+            right: 16px;
+            bottom: 145px;
+            width: 54px;
+            height: 54px;
             border-radius: 50%;
             background: linear-gradient(135deg, #ff3366, #ff007f);
-            border: 3px solid #ffffff;
+            border: 2px solid #ffffff;
             color: white;
             font-weight: 900;
-            font-size: 1rem;
-            cursor: pointer;
-            z-index: 120;
-            animation: pulse101 2s ease-in-out infinite;
+            font-size: 0.9rem;
+            z-index: 1000;
         }
 
         /* Селектор цвета */
@@ -221,22 +177,19 @@
             top: 50%;
             left: 50%;
             transform: translate(-50%, -50%);
-            background: rgba(16, 5, 38, 0.95);
-            backdrop-filter: blur(20px);
+            background: #100526;
             border: 2px solid rgba(255, 255, 255, 0.3);
-            padding: 24px;
-            border-radius: 28px;
-            gap: 16px;
-            z-index: 200;
-            box-shadow: 0 20px 60px rgba(0,0,0,0.8);
+            padding: 20px;
+            border-radius: 20px;
+            gap: 15px;
+            z-index: 2000;
         }
 
         .c-btn {
-            width: 50px;
-            height: 50px;
+            width: 45px;
+            height: 45px;
             border-radius: 50%;
-            border: 3px solid white;
-            cursor: pointer;
+            border: 2px solid white;
         }
     </style>
 </head>
@@ -253,15 +206,19 @@
     </div>
 
     <div class="table">
-        <div class="card-slot deck-slot" id="deck-btn" onclick="playerDraw()">
+        <div class="card-slot deck-slot" onclick="playerDraw()">
             🂠<br>Взять
         </div>
         <div class="card-slot red" id="discard-pile">7</div>
     </div>
 
-    <button class="btn-101" onclick="say101()">101!</button>
-        <div class="player-zone">
-        <div class="cards-hand" id="player-hand"></div>
+    <button class="btn-101" onclick="alert('🔥 101!')">101!</button>
+
+    <!-- Зона карт фиксирована к низу экрана -->
+    <div class="player-zone">
+        <div class="cards-hand" id="player-hand">
+            <span style="color: #aaa; font-size: 0.8rem; margin: auto;">Загрузка карт...</span>
+        </div>
     </div>
 
     <div class="color-picker" id="color-picker">
@@ -280,7 +237,6 @@
         let b1Cards = 7;
         let b2Cards = 7;
         let topCard = { color: 'red', value: '7' };
-        let isInitialized = false;
 
         function getRandomCard() {
             const rand = Math.random();
@@ -316,18 +272,9 @@
             if (b1) b1.innerText = 🤖 Бот 1: ${b1Cards};
             if (b2) b2.innerText = 🤖 Бот 2: ${b2Cards};
 
-            if (b1) b1.classList.toggle('active', turn === 1);
-            if (b2) b2.classList.toggle('active', turn === 2);
-
             const st = document.getElementById('status-label');
             if (st) {
-                if (turn === 0) {
-                    st.innerText = 'Твой ход';
-                    st.style.background = 'linear-gradient(135deg, #00e676, #00d2ff)';
-                } else {
-                    st.innerText = 'Ход бота...';
-                    st.style.background = 'linear-gradient(135deg, #ffbb00, #ff3366)';
-                }
+                st.innerText = (turn === 0) ? 'Твой ход' : 'Ход бота...';
             }
         }
 
@@ -366,26 +313,17 @@
             render();
             if (turn !== 0) setTimeout(botStep, 1000);
         }
+
         function botStep() {
-            if (turn === 1) {
-                if (Math.random() > 0.4) b1Cards = Math.max(1, b1Cards - 1);
-                else b1Cards++;
-            } else {
-                if (Math.random() > 0.4) b2Cards = Math.max(1, b2Cards - 1);
-                else b2Cards++;
-            }
+            if (turn === 1) b1Cards = Math.max(1, b1Cards + (Math.random() > 0.5 ? -1 : 1));
+            else b2Cards = Math.max(1, b2Cards + (Math.random() > 0.5 ? -1 : 1));
+            
             topCard = getRandomCard();
             if (topCard.color === 'wild') topCard.color = colors[Math.floor(Math.random() * 4)];
             nextTurn();
         }
 
-        function say101() {
-            alert('🔥 101!');
-        }
-
-        function initGame() {
-            if (isInitialized) return;
-            
+        function start() {
             try {
                 if (window.Telegram && window.Telegram.WebApp) {
                     window.Telegram.WebApp.ready();
@@ -393,18 +331,20 @@
                 }
             } catch (e) {}
 
-            playerHand = Array.from({length: 7}, () => getRandomCard());
+            // Генерируем карты
+            playerHand = [];
+            for (let i = 0; i < 7; i++) {
+                playerHand.push(getRandomCard());
+            }
             topCard = getRandomCard();
             if (topCard.color === 'wild') topCard.color = 'red';
 
-            isInitialized = true;
             render();
         }
 
-        // Тройная защита для запуска:
-        document.addEventListener('DOMContentLoaded', initGame);
-        window.addEventListener('load', initGame);
-        setTimeout(initGame, 100);
+        // Принудительный старт любым способом
+        start();
+        window.onload = start;
     </script>
 </body>
 </html>
